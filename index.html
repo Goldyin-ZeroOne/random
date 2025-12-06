@@ -20,7 +20,7 @@
       align-items: center;
       padding: 20px;
 
-      background-image: url("./bg-mobile.jpg");
+      background-image: url("./bg-mobile.jpg"); /* 手機版底圖 */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -29,7 +29,7 @@
     /* 🔥 電腦版背景（螢幕寬度 >= 768px） */
     @media (min-width: 768px) {
       body {
-        background-image: url("./bg-desktop.jpg");
+        background-image: url("./bg-desktop.jpg"); /* 電腦版底圖 */
       }
     }
 
@@ -126,19 +126,37 @@
     .result-title {
       font-size: 0.95rem;
       font-weight: 600;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
 
-    .result-group {
-      font-size: 2.1rem;
-      font-weight: 800;
-      letter-spacing: 0.04em;
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.95rem;
       margin-bottom: 4px;
     }
 
-    .result-msg {
-      font-size: 0.9rem;
+    .result-label {
       color: #6b7280;
+    }
+
+    .result-value {
+      font-weight: 600;
+    }
+
+    .result-number {
+      font-size: 1.6rem;
+      font-weight: 800;
+      text-align: center;
+      margin-top: 8px;
+      letter-spacing: 0.04em;
+    }
+
+    .result-msg {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-top: 6px;
+      text-align: center;
     }
 
     .result-ok {
@@ -146,7 +164,7 @@
       background: #eff6ff;
     }
 
-    .result-ok .result-group {
+    .result-ok .result-number {
       color: #1d4ed8;
     }
 
@@ -186,4 +204,109 @@
         />
         <button type="submit" class="btn-primary">查詢</button>
       </div>
-      <div class="helper">僅用於查詢分組，不會儲存或上傳您的資料。</div>
+      <div class="helper">僅用於查詢分組，不會額外儲存或上傳您的資料。</div>
+    </form>
+
+    <div id="resultBox" class="result">
+      <div class="result-title" id="resultTitle"></div>
+
+      <div class="result-row">
+        <div class="result-label">姓名</div>
+        <div class="result-value" id="resultName"></div>
+      </div>
+
+      <div class="result-row">
+        <div class="result-label">分組顏色</div>
+        <div class="result-value" id="resultColor"></div>
+      </div>
+
+      <div class="result-number" id="resultNumber"></div>
+
+      <div class="result-msg" id="resultMsg"></div>
+    </div>
+
+    <div class="footer">
+      若有問題，請洽現場工作人員。
+    </div>
+  </div>
+
+  <script>
+    /* 🔧【名單設定區 — 依照你的名單修改】 
+       每一筆格式：
+       "手機號碼": {
+         name: "姓名",
+         color: "分組顏色",
+         number: "分組號碼顯示文字"
+       }
+    */
+    const PHONE_GROUP_DATA = {
+      "0978447443": { name: "陳韋均", color: "黃色", number: " 1號" },
+      "0920768777": { name: "林佳蓉", color: "藍色", number: " 27號"},
+      "0913308380": { name: "李展旭", color: "紅色", number: " 69號"},
+      "0915270818": { name: "Taco", color: "綠色", number: " 0001號"},
+      "0972028580": { name: "林師傅", color: "超色", number: " 5278號"}
+      // 其他名單請依這個格式繼續增加
+    };
+
+    function normalizePhone(input) {
+      if (!input) return "";
+      let cleaned = input.replace(/[\s-]/g, "");
+      cleaned = cleaned.replace(/\D/g, "");
+      return cleaned;
+    }
+
+    const form = document.getElementById("lookupForm");
+    const phoneInput = document.getElementById("phoneInput");
+    const resultBox = document.getElementById("resultBox");
+    const resultTitle = document.getElementById("resultTitle");
+    const resultName = document.getElementById("resultName");
+    const resultColor = document.getElementById("resultColor");
+    const resultNumber = document.getElementById("resultNumber");
+    const resultMsg = document.getElementById("resultMsg");
+
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+      const rawPhone = phoneInput.value;
+      const phone = normalizePhone(rawPhone);
+
+      if (!phone) {
+        showError("請輸入手機號碼", "請確認後再試一次。");
+        return;
+      }
+
+      const record = PHONE_GROUP_DATA[phone];
+
+      if (record) {
+        showSuccess(record, phone);
+      } else {
+        showError("查無此手機號碼", "請確認是否與報名時填寫的手機相同，或洽現場工作人員。");
+      }
+    });
+
+    function showSuccess(record, phone) {
+      resultBox.style.display = "block";
+      resultBox.classList.remove("result-error");
+      resultBox.classList.add("result-ok");
+
+      resultTitle.textContent = "查詢成功";
+      resultName.textContent = record.name || "-";
+      resultColor.textContent = record.color || "-";
+      resultNumber.textContent = record.number || "";
+      resultMsg.textContent = "您的手機號碼：" + phone;
+    }
+
+    function showError(title, msg) {
+      resultBox.style.display = "block";
+      resultBox.classList.remove("result-ok");
+      resultBox.classList.add("result-error");
+
+      resultTitle.textContent = title;
+      resultName.textContent = "";
+      resultColor.textContent = "";
+      resultNumber.textContent = "";
+      resultMsg.textContent = msg;
+    }
+  </script>
+
+</body>
+</html>

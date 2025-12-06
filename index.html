@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>活動分組查詢系統</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <style>
+    :root {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: #111827;
+    }
+
+    /* 🔥 手機版背景（預設） */
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+
+      background-image: url("./bg-mobile.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    /* 🔥 電腦版背景（螢幕寬度 >= 768px） */
+    @media (min-width: 768px) {
+      body {
+        background-image: url("./bg-desktop.jpg");
+      }
+    }
+
+    .card {
+      background: white;
+      max-width: 420px;
+      width: 100%;
+      border-radius: 18px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
+      padding: 24px 20px 28px;
+    }
+
+    .title {
+      font-size: 1.4rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      text-align: center;
+      color: #6b7280;
+      margin-bottom: 20px;
+    }
+
+    form {
+      margin-top: 12px;
+    }
+
+    label {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #374151;
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    input[type="tel"] {
+      flex: 1;
+      padding: 10px 12px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      font-size: 1rem;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    input[type="tel"]:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
+    }
+
+    button {
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: none;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: #ffffff;
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+    }
+
+    .helper {
+      font-size: 0.8rem;
+      color: #9ca3af;
+      margin-bottom: 12px;
+    }
+
+    .result {
+      margin-top: 18px;
+      padding: 14px 14px 16px;
+      border-radius: 16px;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      display: none;
+    }
+
+    .result-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .result-group {
+      font-size: 2.1rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      margin-bottom: 4px;
+    }
+
+    .result-msg {
+      font-size: 0.9rem;
+      color: #6b7280;
+    }
+
+    .result-ok {
+      border-color: #bfdbfe;
+      background: #eff6ff;
+    }
+
+    .result-ok .result-group {
+      color: #1d4ed8;
+    }
+
+    .result-error {
+      border-color: #fecaca;
+      background: #fef2f2;
+    }
+
+    .result-error .result-title {
+      color: #b91c1c;
+    }
+
+    .footer {
+      margin-top: 18px;
+      font-size: 0.75rem;
+      color: #9ca3af;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card">
+    <div class="title">活動分組查詢</div>
+    <div class="subtitle">請輸入您報名時留下的手機號碼</div>
+
+    <form id="lookupForm">
+      <label for="phoneInput">手機號碼</label>
+      <div class="input-row">
+        <input
+          id="phoneInput"
+          type="tel"
+          inputmode="numeric"
+          autocomplete="off"
+          placeholder="例如：0912345678"
+          required
+        />
+        <button type="submit" class="btn-primary">查詢</button>
+      </div>
+      <div class="helper">僅用於查詢分組，不會儲存或上傳您的資料。</div>

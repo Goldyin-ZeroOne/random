@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>ZeroOne分組查詢系統</title>
+  <title>活動分組查詢系統</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <style>
@@ -20,7 +20,7 @@
       align-items: center;
       padding: 20px;
 
-      background-image: url("./bg-mobile.jpg"); /* 手機版底圖 */
+      background-image: url("./bg-mobile.jpg");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -29,7 +29,7 @@
     /* 🔥 電腦版背景（螢幕寬度 >= 768px） */
     @media (min-width: 768px) {
       body {
-        background-image: url("./bg-desktop.jpg"); /* 電腦版底圖 */
+        background-image: url("./bg-desktop.jpg");
       }
     }
 
@@ -152,6 +152,14 @@
       letter-spacing: 0.04em;
     }
 
+    /* 顏色對應 class */
+    .num-red    { color: #dc2626; }  /* 紅 */
+    .num-orange { color: #f97316; }  /* 橙 */
+    .num-yellow { color: #eab308; }  /* 黃 */
+    .num-green  { color: #16a34a; }  /* 綠 */
+    .num-blue   { color: #2563eb; }  /* 藍 */
+    .num-purple { color: #7c3aed; }  /* 紫 */
+
     .result-msg {
       font-size: 0.8rem;
       color: #9ca3af;
@@ -162,10 +170,6 @@
     .result-ok {
       border-color: #bfdbfe;
       background: #eff6ff;
-    }
-
-    .result-ok .result-number {
-      color: #1d4ed8;
     }
 
     .result-error {
@@ -189,10 +193,10 @@
 <body>
   <div class="card">
     <div class="title">活動分組查詢</div>
-    <div class="subtitle">請輸入您報名時留下的手機號碼</div>
+    <div class="subtitle">請輸入您報名時留下的手機號碼<br>Enter your phone number</div>
 
     <form id="lookupForm">
-      <label for="phoneInput">手機號碼</label>
+      <label for="phoneInput">手機號碼phone number</label>
       <div class="input-row">
         <input
           id="phoneInput"
@@ -204,7 +208,7 @@
         />
         <button type="submit" class="btn-primary">查詢</button>
       </div>
-      <div class="helper">僅用於查詢分組，不會額外儲存或上傳您的資料。</div>
+      <div class="helper">僅用於查詢分組，不會額外儲存或上傳您的資料。<br>Only for group lookup, no data will be stored or uploaded.</div>
     </form>
 
     <div id="resultBox" class="result">
@@ -226,26 +230,28 @@
     </div>
 
     <div class="footer">
-      若有問題，請洽現場工作人員。
+      若有問題，請洽現場工作人員。<br>If you have questions, please contact staff on site.
     </div>
   </div>
 
   <script>
-    /* 🔧【名單設定區 — 依照你的名單修改】 
-       每一筆格式：
-       "手機號碼": {
-         name: "姓名",
-         color: "分組顏色",
-         number: "分組號碼顯示文字"
-       }
-    */
     const PHONE_GROUP_DATA = {
       "0978447443": { name: "陳韋均", color: "黃色", number: " 1號" },
       "0920768777": { name: "林佳蓉", color: "藍色", number: " 27號"},
       "0913308380": { name: "李展旭", color: "紅色", number: " 69號"},
       "0915270818": { name: "Taco", color: "綠色", number: " 0001號"},
-      "0972028580": { name: "林師傅", color: "超色", number: " 5278號"}
-      // 其他名單請依這個格式繼續增加
+      "0909881087": { name: "Leo", color: "橙色", number: " 37號"},
+      "0972028580": { name: "林師傅", color: "紫色", number: " 5278號"}
+      // 可繼續增加
+    };
+
+    const COLOR_CLASS_MAP = {
+      "紅色": "num-red",
+      "橙色": "num-orange",
+      "黃色": "num-yellow",
+      "綠色": "num-green",
+      "藍色": "num-blue",
+      "紫色": "num-purple"
     };
 
     function normalizePhone(input) {
@@ -270,7 +276,7 @@
       const phone = normalizePhone(rawPhone);
 
       if (!phone) {
-        showError("請輸入手機號碼", "請確認後再試一次。");
+        showError("請輸入手機號碼 / Please enter phone number", "請確認後再試一次。/ Please try again.");
         return;
       }
 
@@ -279,7 +285,7 @@
       if (record) {
         showSuccess(record, phone);
       } else {
-        showError("查無此手機號碼", "請確認是否與報名時填寫的手機相同，或洽現場工作人員。");
+        showError("查無此手機號碼 / Phone number not found", "請確認是否與報名時填寫的手機相同，或洽現場工作人員。/ Please check your phone number or contact staff.");
       }
     });
 
@@ -288,11 +294,20 @@
       resultBox.classList.remove("result-error");
       resultBox.classList.add("result-ok");
 
-      resultTitle.textContent = "查詢成功";
+      resultTitle.textContent = "查詢成功 / Lookup Successful";
       resultName.textContent = record.name || "-";
       resultColor.textContent = record.color || "-";
       resultNumber.textContent = record.number || "";
-      resultMsg.textContent = "您的手機號碼：" + phone;
+      resultMsg.textContent = "您的手機號碼 / Your phone number: " + phone;
+
+      // 移除舊顏色 class
+      resultNumber.className = "result-number";
+
+      // 套上對應顏色
+      const colorClass = COLOR_CLASS_MAP[record.color];
+      if (colorClass) {
+        resultNumber.classList.add(colorClass);
+      }
     }
 
     function showError(title, msg) {
@@ -310,4 +325,3 @@
 
 </body>
 </html>
-
